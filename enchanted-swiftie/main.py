@@ -1,11 +1,29 @@
 import discord
 from discord.ext import commands
 import random
+import billboard
 from google_images_search import GoogleImagesSearch
+import datetime as dt
+
 
 # Stores the feature current status - True for on False for off
 tayball = True
 event_status = True
+singles_dict = {}
+last_checked = None
+with open("billboard.txt", "r") as file:
+    """Reading the file and converting it to a last checked date and a singles dictionary"""
+    date_str = file.readline()
+    # Turns the string into a Year, month and day variables by hand
+    year = int(date_str[0:4])
+    month = int(date_str[5:7])
+    day = int(date_str[8:10])
+    # Creating a last checked variable, so i know where to check from instead of going over the last 10 years
+    last_checked = dt.datetime(year, month, day).date()
+    for line in file.readlines():
+        # Turns the string into a 2 length list with the song name in the 0th place and the peak in the 1st
+        single = line.split(" - ")
+        singles_dict[single[0]] = int(single[1])
 
 client = commands.Bot(command_prefix="t!")
 with open("google shit.txt", "rt") as codes:
@@ -89,6 +107,38 @@ async def event(ctx, *, event_name=""):
             # Daily quota filled, google won't provide more urls
             else:
                 await ctx.send("sorry, try again tomorrow")
+
+
+@client.command(aliases=["Singles"])
+async def singles(ctx):
+    global singles_dict, last_checked
+    # The first chart after Taylor's first single was released
+    # Goes over all the charts up to this date
+    while last_checked < dt.datetime.date(dt.datetime.now()):
+        print(last_checked)
+        # Creates a chart list for the week
+        chart = billboard.ChartData("hot-100", str(last_checked))
+        # Goes over all songs on the chart, to check if they're made by Taylor Swift
+        for entry_place in range(len(chart)):
+            entry = chart[entry_place]
+            if entry.artist == "Taylor Swift":
+                # Checks if we checked the single already
+                if entry.title not in singles_dict.keys():
+                    singles_dict[entry.title] = entry_place + 1
+                # Updates the single's place if needed
+                elif entry_place < singles_dict[entry.title]:
+                    singles_dict[entry.title] = entry_place + 1
+        # Goes over to the next chart
+        last_checked = last_checked + dt.timedelta(7)
+    # Formatting the dict into a message the bot can send
+    message = "All of Taylor's hot 100 singles:\n"
+    for single in singles_dict.items():
+        message += f"{single[0]} - {single[1]}\n"
+    with open("billboard.txt", "w") as file:
+        # Updates the file
+        file.write(f"{last_checked}\n{message[34:]}")
+    await ctx.send(message)
+
 
 
 def main():
