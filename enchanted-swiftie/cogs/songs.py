@@ -6,8 +6,6 @@ from discord.ext import commands
 class Songs(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        # Stores the feature current status - True for on False for off
-        self.singles_status = True
         self.singles_dict = {}
         self.last_checked = None
 
