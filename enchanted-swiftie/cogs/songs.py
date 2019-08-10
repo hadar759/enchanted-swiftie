@@ -28,21 +28,20 @@ class Songs(commands.Cog):
             # Updates the file
             singles_file.write(f"{self.last_checked_billboard}\n{message[33:]}")
 
-        await ctx.send(message)
+        await ctx.send("All of Taylor's hot 100 singles:\n" + message)
 
     def add_singles_to_dict(self, chart: billboard.ChartData):
         """Goes over all songs on the chart, to check if they're made by Taylor Swift"""
         for entry_place, entry in enumerate(chart):
             if entry.artist == "Taylor Swift":
                 # Adds/updates the single if needed
-                if entry.title not in self.singles_dict.keys() or entry_place < self.singles_dict[entry.title]:
+                if entry.title not in self.singles_dict or entry_place < self.singles_dict[entry.title]:
                     self.singles_dict[entry.title] = entry_place + 1
 
     @staticmethod
     def format_singles(singles_dict: Dict[str, int]) -> str:
         """Formats the singles dict into a message the bot can send"""
-        message = "All of Taylor's hot 100 singles:\n"
-
+        message = "\n".join(f"{single_name} - {single_place}" for single_name, single_place in singles_dict.items())
         for single_name, single_place in singles_dict.items():
             message += f"{single_name} - {single_place}"
 
@@ -55,4 +54,5 @@ class Songs(commands.Cog):
             self.last_checked_billboard = dt.datetime.strptime(singles_file.readline()[:-1], "%Y-%m-%d").date()
             print(self.last_checked_billboard)
             # Reads the file and populates the singles_dict with the single name and it's peak place
-            self.singles_dict = {single.split(" - ")[0]: single.split(" - ")[1] for single in singles_file.readlines()}
+            # noinspection PyTypeChecker
+            self.singles_dict = dict(single.split(" - ") for single in singles_file.readlines())

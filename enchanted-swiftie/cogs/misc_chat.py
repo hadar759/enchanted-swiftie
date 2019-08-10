@@ -1,4 +1,5 @@
 import random
+from typing import List
 
 from discord.ext import commands
 from google_images_search import GoogleImagesSearch
@@ -15,7 +16,7 @@ GOOD_SONGS = ["new romantics", "wildest dreams"]
 class MiscChat(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.answers = []
+        self.answers: List[str] = []
         with open(r"resources\tayball-answers.txt", "rt") as raw_answers:
             for line in raw_answers.readlines():
                 self.answers.append(line)
@@ -56,6 +57,5 @@ class MiscChat(commands.Cog):
         query = "Taylor Swift " + event_name
         if event_name.strip() == "":
             # Really dumb way to create a random search
-            query = "Taylor Swift " + str(random.randrange(1, 10)) + str(random.randrange(1, 10)) + \
-                    str(random.randrange(1, 10))
+            query = f"Taylor Swift {random.randrange(1000)}"
         return query
