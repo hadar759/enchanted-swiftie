@@ -1,4 +1,5 @@
 from discord.ext import commands
+
 from cogs import *
 
 cog_list = [MiscChat, Songs]
@@ -10,7 +11,7 @@ def main():
     for cog in cog_list:
         bot.add_cog(cog(bot))
 
-    with open(r"support files\token.txt", "rt") as token_file:
+    with open(r"resources\token.txt", "rt") as token_file:
         token = token_file.read()
     bot.run(token)
 

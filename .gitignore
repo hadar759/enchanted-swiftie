@@ -1,5 +1,6 @@
-token.txt
-google shit.txt
+resources/google-token.txt
+resources/token.txt
+*.pyc
 
-# pycharm
+# PyCharm
 .idea/
