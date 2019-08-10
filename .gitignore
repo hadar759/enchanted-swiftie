@@ -1,0 +1,6 @@
+enchanted-swiftie/resources/google-token.txt
+enchanted-swiftie/resources/token.txt
+*.pyc
+
+# PyCharm
+.idea/
