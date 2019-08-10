@@ -26,7 +26,7 @@ class Songs(commands.Cog):
         message = self.format_singles(self.singles_dict)
         with open(r"resources\billboard.txt", "w") as singles_file:
             # Updates the file
-            singles_file.write(f"{self.last_checked_billboard}\n{message[33:]}")
+            singles_file.write(f"{self.last_checked_billboard}\n{message}")
 
         await ctx.send("All of Taylor's hot 100 singles:\n" + message)
 
@@ -41,11 +41,7 @@ class Songs(commands.Cog):
     @staticmethod
     def format_singles(singles_dict: Dict[str, int]) -> str:
         """Formats the singles dict into a message the bot can send"""
-        message = "\n".join(f"{single_name} - {single_place}" for single_name, single_place in singles_dict.items())
-        for single_name, single_place in singles_dict.items():
-            message += f"{single_name} - {single_place}"
-
-        return message
+        return "\n".join(f"{single_name} - {single_place}" for single_name, single_place in singles_dict.items())
 
     def read_singles_info(self):
         """Reads the file and updates the last_checked and singles_dict class variables"""
