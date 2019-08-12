@@ -41,7 +41,7 @@ class Songs(commands.Cog):
     @staticmethod
     def format_singles(singles_dict: Dict[str, int]) -> str:
         """Formats the singles dict into a message the bot can send"""
-        return "\n".join(f"{single_name} - {single_place}" for single_name, single_place in singles_dict.items())
+        return "".join(f"{single_name} - {single_place}" for single_name, single_place in singles_dict.items())
 
     def read_singles_info(self):
         """Reads the file and updates the last_checked and singles_dict class variables"""
