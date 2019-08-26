@@ -5,9 +5,6 @@ from discord.ext import commands
 from google_images_search import GoogleImagesSearch
 from googleapiclient.errors import HttpError
 
-with open(r"resources\google-token.txt", "rt") as gis_token_file:
-    gis = GoogleImagesSearch(gis_token_file.readline().rstrip(), gis_token_file.readline().strip())
-
 GOOD_ADJECTIVES = ["best", "good", "fantastic", "great"]
 BAD_ADJECTIVES = ["worst", "bad", "trash", "garbage"]
 GOOD_SONGS = ["new romantics", "wildest dreams"]
@@ -20,17 +17,19 @@ class MiscChat(commands.Cog):
         with open(r"resources\tayball-answers.txt", "rt") as raw_answers:
             for line in raw_answers.readlines():
                 self.answers.append(line)
+        with open(r"resources\google-token.txt", "rt") as gis_token_file:
+            self.gis = GoogleImagesSearch(gis_token_file.readline().rstrip(), gis_token_file.readline().strip())
 
     @commands.command(name="tayball", aliases=["Tayball", "tayBall", "TayBall"])
-    async def command_tayball(self, ctx: commands.context, *, question: str):
+    async def command_tayball(self, ctx: commands.Context, *, question: str):
         """Sends Taylorized 8ball answers"""
         await ctx.send(self.select_tayball_answer(question))
 
     @commands.command(name="event", aliases=["Event"])
-    async def commmand_event(self, ctx: commands.context, *, event_name: str = ""):
+    async def commmand_event(self, ctx: commands.Context, *, event_name: str = ""):
         """sends either a random image of taylor swift or the first image on google images from a given query"""
         try:
-            url = gis.search(search_params={'q': self.create_search_query(event_name), 'num': 1})
+            url = self.gis.search(search_params={'q': self.create_search_query(event_name), 'num': 1})
             await ctx.send(url)
         except HttpError as e:
             print(e.content)

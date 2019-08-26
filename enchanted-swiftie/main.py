@@ -2,7 +2,7 @@ from discord.ext import commands
 
 from cogs import *
 
-cog_list = [MiscChat, Songs]
+cog_list = [MiscChat, Songs, VoiceModule]
 
 
 def main():
@@ -18,3 +18,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
